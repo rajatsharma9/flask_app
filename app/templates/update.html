@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Update|Flask-Blog{% endblock %}
+
+{% block head %}
+    {{ super() }}
+    <!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/createPost.css') }}"> -->
+{% endblock %}
+
+{% block content %}
+  <section class="features">
+  <h1> Update Your Post Here </h1>
+  <div class="container my-3">
+    <h2>Update a Post</h2>
+    <form action="{{ url_for('main.update', post_id=user_post.id) }}" method="POST">
+      <div class="mb-3">
+        <label for="title" class="form-label">Post Title</label>
+        <input type="text" class="form-control" name="title" id="title" value="{{user_post.post_title}}"> 
+      </div>
+      <div class="mb-3">
+        <label for="content" class="form-label">Post Content</label>
+        <input type="text" class="form-control" name="content" id="content" value="{{user_post.post_content}}">
+      </div>
+
+      <button type="submit" class="btn btn-dark">Submit</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

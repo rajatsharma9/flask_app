@@ -1,0 +1,100 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+
+.mynav h1{
+    font-family: "Sacramento",cursive;
+    color: #31ff7a;
+    padding-top: 120px;
+    padding-bottom: 0;
+    font-size: 65px;
+}
+.mynav p {
+    text-align: center;
+    font-size: 50px;
+    color: black;
+    letter-spacing: 2px;
+    font-weight: bold;
+    font-family:"Sulphur Point",sans-serif;
+}
+
+.navbar .navbar-brand:hover{
+    color:greenyellow;
+}
+.navbar .navbar-brand{
+    color:white;
+    font-family: "Sacramento",cursive;
+    font-size: 26px;
+}
+
+
+.navbar .nav-item a:hover{
+    color: orange !important;
+
+
+}
+.navbar .nav-item a{
+    font-size: 20px;
+    color: white !important;
+    letter-spacing: 1px;
+    
+    
+}
+
+/* features */
+
+.features{
+    padding: 100px;
+}
+
+h1{
+    text-align: center !important;
+    padding-bottom: 30px !important;
+    color: darkred;
+    font-family: cursive;
+}
+
+.feature-img img{
+    width: 100%;
+}
+
+
+.footer{
+    padding: 100px 20px 15px;
+    background-image: linear-gradient(#2d557d,#9610fb);
+    color: #fff;
+}
+
+.footer-logo{
+    width: 100px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.footer h4{
+    text-align: left;
+    margin-top: 15px;
+    margin-bottom: 25px;
+}
+
+.footer p{
+    font-size: 12px;
+    text-align: justify;
+    padding-right: 35px;
+}
+
+.footer .row .fa{
+    padding-right: 20px;
+    font-size: 15px;
+}
+
+.footer hr{
+    margin-top: 10px;
+    background: #efefef;
+}
+.fa-heart{
+    margin: 0 5px;
+    color: #f44336;
+}
