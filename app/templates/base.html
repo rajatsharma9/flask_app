@@ -31,9 +31,7 @@
       <li class="nav-item">
         <a class="nav-link" href="#!">About</a>
       </li>
-      <!-- <li class="nav-item">
-        <a class="nav-link" href="/show_all_post/1">All Post</a>
-      </li> -->
+
       {% if session.user %}
         <li class="nav-item">
           <a class="nav-link" href="/create_post">Add Post</a>
@@ -43,7 +41,11 @@
           <a class="nav-link" href="/signUp">SignUp</a>
         </li>
       {% endif %}
-      
+      {% if session.user %}
+        <li class="nav-item">
+          <a class="nav-link" href="/user_profile">Profile</a>
+        </li>
+      {% endif %}
       {% if session.user %}
         <li class="nav-item">
           <a class="nav-link" href="/logout">LogOut</a>

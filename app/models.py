@@ -12,7 +12,9 @@ class User(db.Model, UserMixin):
     fullName = db.Column(db.String(80))
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(250))
+    image_file = db.Column(db.String(200), nullable=True)
+    password = db.Column(db.String(120))
+    data_created = db.Column(db.DateTime, default=datetime.datetime.now())
     user_posts = db.relationship(
         "Post",
         backref='user',

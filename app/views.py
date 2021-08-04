@@ -1,7 +1,10 @@
-from . import db # noqa
-from .models import Post
-from flask import Blueprint, render_template, redirect, url_for, request
+from . import db, ALLOWED_EXTENSIONS # noqa
+from .models import Post, User
+from flask import Blueprint, render_template, redirect, url_for, request, flash
 from flask_login import current_user
+from werkzeug.utils import secure_filename
+import os
+import uuid
 
 main = Blueprint('main', __name__)
 
@@ -68,3 +71,32 @@ def delete(post_id):
 def about():
     """Show the loged in user post."""
     return render_template('about.html')
+
+
+def allowed_file(filename):
+    """Return File with defined extension."""
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+@main.route('/user_profile', methods=['GET', 'POST'])
+def user_profile():
+    """Show User profile and uplode image."""
+    image_url = current_user.image_file
+    if request.method == 'POST':
+        # check if the post request has the file part
+        file = request.files['file']
+        # If the user does not select a file, the browser submits an
+        # empty file without a filename.
+        if file.filename == '' or 'file' not in request.files:
+            flash('No selected file')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            key = uuid.uuid1()
+            img = request.files["file"]
+            img_new_name = f"{key}{img.filename}" # noqa
+            path = os.path.join(main.root_path, 'static/user_profile_img', img_new_name)
+            img.save(path)
+            current_user.image_file = img_new_name
+            db.session.commit()
+        image_url = url_for('static', filename='user_profile_img/' + current_user.image_file)
+    return render_template('userProfile.html', image_url=image_url, user=current_user)

@@ -56,6 +56,13 @@ h1{
     font-family: cursive;
 }
 
+.heading{
+    text-align: center !important;
+    padding-top: 10px !important;
+    color: darkred;
+    font-family: cursive;
+}
+
 .feature-img img{
     width: 100%;
 }
