@@ -81,7 +81,7 @@ def allowed_file(filename):
 @main.route('/user_profile', methods=['GET', 'POST'])
 def user_profile():
     """Show User profile and uplode image."""
-    image_url = current_user.image_file
+    image_url = url_for('static', filename='user_profile_img/' + current_user.image_file)
     if request.method == 'POST':
         # check if the post request has the file part
         file = request.files['file']

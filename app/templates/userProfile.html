@@ -10,14 +10,14 @@
 {% block content %}
 <h1 class="heading"> User Profile</h1>
   <section class="features">
-    {% for message in get_flashed_messages() %}
+    <!-- {% for message in get_flashed_messages() %}
       {% if message %}
         <div class="alert alert-warning">
           <button type="button"class="close"data-dismiss="alert">x</button>
           {{ message }}
         </div>
       {% endif%}
-    {% endfor %}
+    {% endfor %} -->
     <div class="container">
       <div>
         <img src="{{image_url}}" style="width: 30%;padding-bottom: 15px;" alt="">
