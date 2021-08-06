@@ -3,11 +3,16 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_session import Session
 from flask_bcrypt import Bcrypt
+from flask_restful import Resource, Api
+from flask_marshmallow import Marshmallow
 
 
 # init SQLAlchemy so we can use it later in our models
 db = SQLAlchemy()
 sess = Session()
+api = Api()
+
+marshl = Marshmallow()
 
 
 def create_app():
@@ -22,6 +27,9 @@ def create_app():
 
     app.config['SESSION_TYPE'] = 'filesystem'
     sess.init_app(app)
+
+    api.init_app(app)
+    marshl.init_app(app)
 
     login_manager = LoginManager()
     login_manager.login_view = 'auth.login'

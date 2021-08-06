@@ -1,9 +1,24 @@
 from . import db # noqa
-from .models import Post
-from flask import Blueprint, render_template, redirect, url_for, request
+from .models import Post, User
+from flask import Blueprint, render_template, redirect, url_for, request, jsonify
 from flask_login import current_user
+from flask_restful import Resource, Api
+from .schema import users_models_schema
 
 main = Blueprint('main', __name__)
+api = Api(main)
+
+
+class GetAllUsers(Resource):
+    """Shows a list of all Users."""
+
+    def get(self):
+        """."""
+        user = User.query.all()
+        result = users_models_schema.dump(user)
+        return jsonify(result)
+
+api.add_resource(GetAllUsers, '/hello')
 
 
 @main.route('/')
