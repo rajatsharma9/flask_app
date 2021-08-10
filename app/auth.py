@@ -1,66 +1,75 @@
-from flask import Blueprint, render_template, redirect, url_for, request, flash  # noqa
+from flask import Blueprint, render_template, redirect, url_for, request, flash,session, jsonify # noqa
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user
 from .models import User
 from . import db
-from app import sess
+from flask_restful import Resource, Api
+from .schema import users_models_schema
 
 auth = Blueprint('auth', __name__)
+api = Api(auth)
 
 
-@auth.route('/signUp', methods=['GET', 'POST'])
-def signup():
-    """Show signUP page."""
-    if request.method == 'POST':
-        fullname = request.form['name']
-        username = request.form['username']
-        email = request.form['email']
-        password = request.form['password']
+class GetAllUsers(Resource):
+    """Here we create API to get all users."""
 
-        # if this returns a user, then the email already exists in database
-        user = User.query.filter_by(email=email).first()
+    def get(self, **kwargs):
+        """."""
+        user_object = User.query.all()
+        print(users_models_schema)
+        json_user_object = users_models_schema.dump(user_object)
+        return jsonify(json_user_object)
 
-        # if a user is found, we want to redirect back to signup page so user can try again
+api.add_resource(GetAllUsers, '/get_users/<int:post_id>')
+
+
+class Signin(Resource):
+    """Here we create API to perform user registration process."""
+
+    def post(self):
+        """."""
+        user_data = request.get_json()
+        user = User.query.filter_by(email=user_data.get('email')).first()
+
         if user:
             flash('A user already exists with that email address.')
-            return redirect(url_for('auth.login'))
+            return 'User exists'
 
-        # create new user with the form data. Hash the password so plaintext version isn't saved.
-        new_user_object = User(fullName=fullname, email=email, username=username, password=generate_password_hash(password))
+        new_user_object = User(fullName=user_data.get('fullname'), email=user_data.get('email'), username=user_data.get('username'), password=generate_password_hash(user_data.get('password')))
         db.session.add(new_user_object)
         db.session.commit()
-        return redirect(url_for('auth.login'))
-    return render_template('signUp.html')
+        return 'registration successful'
+api.add_resource(Signin, '/user_signin')
 
 
-@auth.route('/login', methods=['GET', 'POST'])
-def login():
-    """Show the Login Page."""
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
-        # remember = True if request.form.get('remember') else False
+class Login(Resource):
+    """Here we create API to perform user login process."""
 
-        user = User.query.filter_by(email=email).first()
+    def post(self):
+        """."""
+        user_login_data = request.get_json()
 
-        if user and check_password_hash(user.password, password):
+        user = User.query.filter_by(email=user_login_data.get('email')).first()
+
+        if user and check_password_hash(user.password, user_login_data.get('password')):
             user.authenticated = True
             db.session.add(user)
             db.session.commit()
-            sess["user"] = True
+            session["user"] = True
             login_user(user)
-            flash('Login Successfully')
-            return redirect(url_for("main.user_post", user_id=user.id))
-
-        flash('Invalid username/password combination')
-        return redirect(url_for('auth.login'))
-
-    return render_template('logIn.html')
+            # flash('Login Successfully')
+            return 'Login Successfully'
+        return 'Invalid username/password combination'
+api.add_resource(Login, '/user_login')
 
 
-@auth.route('/logout')
-def logout():
+class Logout(Resource):
     """Logout the current user."""
-    sess["user"] = False
-    logout_user()
-    return render_template("home.html")
+
+    def get(self):
+        """."""
+        session['user'] = None
+        logout_user()
+        return "Logout Successfully"
+
+api.add_resource(Logout, '/user_logout')
