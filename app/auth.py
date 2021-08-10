@@ -1,9 +1,9 @@
-from flask import Blueprint, render_template, redirect, url_for, request, flash  # noqa
-from werkzeug.security import generate_password_hash, check_password_hash
+from flask import Blueprint, render_template, redirect, url_for, request, flash, session  # noqa
+# from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user
 from .models import User
-from . import db
-from app import sess
+from . import db, bcrypt
+
 
 auth = Blueprint('auth', __name__)
 
@@ -26,7 +26,7 @@ def signup():
             return redirect(url_for('auth.login'))
 
         # create new user with the form data. Hash the password so plaintext version isn't saved.
-        new_user_object = User(fullName=fullname, email=email, username=username, password=generate_password_hash(password))
+        new_user_object = User(fullName=fullname, email=email, username=username, password=bcrypt.generate_password_hash(password))
         db.session.add(new_user_object)
         db.session.commit()
         return redirect(url_for('auth.login'))
@@ -43,11 +43,11 @@ def login():
 
         user = User.query.filter_by(email=email).first()
 
-        if user and check_password_hash(user.password, password):
+        if user and bcrypt.check_password_hash(user.password, password):
             user.authenticated = True
             db.session.add(user)
             db.session.commit()
-            sess["user"] = True
+            session['user'] = user
             login_user(user)
             flash('Login Successfully')
             return redirect(url_for("main.user_post", user_id=user.id))
@@ -61,6 +61,6 @@ def login():
 @auth.route('/logout')
 def logout():
     """Logout the current user."""
-    sess["user"] = False
+    session['user'] = None
     logout_user()
     return render_template("home.html")

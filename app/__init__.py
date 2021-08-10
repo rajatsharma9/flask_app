@@ -1,4 +1,4 @@
-from flask import Flask  # noqa
+from flask import Flask, flash  # noqa
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_session import Session
@@ -8,12 +8,17 @@ from flask_bcrypt import Bcrypt
 # init SQLAlchemy so we can use it later in our models
 db = SQLAlchemy()
 sess = Session()
+bcrypt = Bcrypt()   # noqa
+
+# bycrypt.init(app)
+
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
 
 def create_app():
     """Construct the core app object."""
     app = Flask(__name__)
-    bcrypt = Bcrypt(app)   # noqa
+    # bcrypt = Bcrypt(app)   # noqa
 
     app.config['SECRET_KEY'] = 'secret-key-goes-here'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:''@localhost/BluePrintDB'
