@@ -11,13 +11,14 @@ db = SQLAlchemy()
 sess = Session()
 marshl = Marshmallow()
 
+
 def create_app():
     """Construct the core app object."""
     app = Flask(__name__)
     bcrypt = Bcrypt(app)   # noqa
 
     app.config['SECRET_KEY'] = 'secret-key-goes-here'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:''@localhost/codingThunder'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.init_app(app)
 
