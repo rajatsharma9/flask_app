@@ -3,11 +3,14 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_session import Session
 from flask_bcrypt import Bcrypt
+from flask_marshmallow import Marshmallow
+from flask_jwt_extended import JWTManager
 
-
-# init SQLAlchemy so we can use it later in our models
+# init SQLAlchemy so we can use it in our models
 db = SQLAlchemy()
 sess = Session()
+marshl = Marshmallow()
+jwt = JWTManager()
 
 
 def create_app():
@@ -22,6 +25,8 @@ def create_app():
 
     app.config['SESSION_TYPE'] = 'filesystem'
     sess.init_app(app)
+    marshl.init_app(app)
+    jwt.init_app(app)
 
     login_manager = LoginManager()
     login_manager.login_view = 'auth.login'
