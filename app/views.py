@@ -1,9 +1,20 @@
 from . import db # noqa
 from .models import Post
-from flask import Blueprint, render_template, redirect, url_for, request
+from flask import Blueprint, render_template, redirect, url_for, request, jsonify
 from flask_login import current_user
+from flask_jwt_extended import get_jwt_identity, jwt_required
+
 
 main = Blueprint('main', __name__)
+
+
+@main.route("/protected", methods=["GET"])
+@jwt_required()
+def protected():
+    # Access the identity of the current user with get_jwt_identity
+    current_user = get_jwt_identity()
+    print(current_user)
+    return jsonify(logged_in_as=current_user), 200
 
 
 @main.route('/')
@@ -12,32 +23,31 @@ def home():
     return render_template('home.html')
 
 
-@main.route('/create_post', methods=['GET', 'POST'])
+@main.route('/create_post', methods=['POST'])
+@jwt_required()
 def create_post():
     """Here we use Http methods for creating our post by using forms."""
     if request.method == 'POST':
-        data = {
-            'post_title': request.form['title'],
-            'post_subtitle': request.form['subtitle'],
-            'post_content': request.form['content'],
-        }
-        post_object = Post(data)
+        user_login_data = request.get_json()
+        post_object = Post(user_login_data)
         post_object.user_id = current_user.id
         db.session.add(post_object)
         db.session.commit()
-    return render_template('createPost.html')
+    return {"message": "Success", "data": user_login_data}
 
 
 @main.route('/show_all_post/<int:user_id>')
+@jwt_required()
 def user_post(user_id):
     """Here we get/show the all Post of user by user_id."""
     user_posts = Post.query.filter(Post.user_id == user_id).order_by(
         Post.created_date.desc()).all()
 
-    return render_template('showAllPost.html', user_posts=user_posts)
+    return jsonify(user_posts)
 
 
 @main.route('/update_post/<int:post_id>', methods=['GET', 'POST'])
+@jwt_required()
 def update(post_id):
     """Here we use Http methods for updating the Post when user clickon update button."""
     update_post_object = Post.query.filter_by(id=post_id).first()

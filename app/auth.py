@@ -5,6 +5,8 @@ from .models import User
 from . import db
 from flask_restful import Resource, Api
 from .schema import users_models_schema, SigninFields, LoginSchema
+from flask_jwt_extended import create_access_token
+
 
 auth = Blueprint('auth', __name__)
 api = Api(auth)
@@ -59,8 +61,9 @@ class Login(Resource):
             db.session.commit()
             session["user"] = True
             login_user(user)
+            access_token = create_access_token(identity=user.email)
             # flash('Login Successfully')
-            return 'Login Successfully'
+            return jsonify(access_token=access_token)
         return 'Invalid email/password combination'
 api.add_resource(Login, '/user_login')
 
