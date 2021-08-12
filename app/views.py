@@ -2,19 +2,10 @@ from . import db # noqa
 from .models import Post
 from flask import Blueprint, render_template, redirect, url_for, request, jsonify
 from flask_login import current_user
-from flask_jwt_extended import get_jwt_identity, jwt_required
+from flask_jwt_extended import jwt_required
 
 
 main = Blueprint('main', __name__)
-
-
-@main.route("/protected", methods=["GET"])
-@jwt_required()
-def protected():
-    # Access the identity of the current user with get_jwt_identity
-    current_user = get_jwt_identity()
-    print(current_user)
-    return jsonify(logged_in_as=current_user), 200
 
 
 @main.route('/')
@@ -46,7 +37,7 @@ def user_post(user_id):
     return jsonify(user_posts)
 
 
-@main.route('/update_post/<int:post_id>', methods=['GET', 'POST'])
+@main.route('/update_post/<int:post_id>', methods=['POST'])
 @jwt_required()
 def update(post_id):
     """Here we use Http methods for updating the Post when user clickon update button."""
@@ -66,6 +57,7 @@ def update(post_id):
 
 
 @main.route('/delete_post/<int:post_id>')
+@jwt_required()
 def delete(post_id):
     """Here we delete the Post when user click on delete button."""
     user_post_object = Post.query.filter_by(id=post_id).first()

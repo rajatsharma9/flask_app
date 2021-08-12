@@ -6,7 +6,7 @@ from flask_bcrypt import Bcrypt
 from flask_marshmallow import Marshmallow
 from flask_jwt_extended import JWTManager
 
-# init SQLAlchemy so we can use it later in our models
+# init SQLAlchemy so we can use it in our models
 db = SQLAlchemy()
 sess = Session()
 marshl = Marshmallow()
